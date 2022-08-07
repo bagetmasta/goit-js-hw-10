@@ -28,6 +28,10 @@ body {
   list-style: none;
 }
 
+.box {
+  display: flex;
+}
+
 .list-headers {
   font-weight: bold;
 }

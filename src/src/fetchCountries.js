@@ -13,6 +13,7 @@ export const fetchCountries = name => {
   const url = `${BASE_URL}/${inputValue}?fields=name,capital,population,flags,languages`;
 
   if (inputValue === '') {
+    refs.countryInfo.innerHTML = '';
     refs.countryList.innerHTML = '';
     return;
   }
@@ -20,8 +21,6 @@ export const fetchCountries = name => {
   return fetch(url)
     .then(response => response.json())
     .then(data => {
-      console.log(data);
-
       if (data.length > 10) {
         refs.countryList.innerHTML = '';
 
@@ -31,39 +30,57 @@ export const fetchCountries = name => {
           )
         );
       } else if (data.length >= 2 && data.length <= 10) {
-        return renderMarkupFromTwoTillTenCountries(data);
+        renderMarkupFromTwoTillTenCountries(data);
       } else if (data.length === 1) {
-        return renderMarkupForOneCountry(data);
+        renderMarkupForOneCountry(data);
       } else {
         refs.countryList.innerHTML = '';
+        refs.countryInfo.innerHTML = '';
         throw new Error(
           Notiflix.Notify.failure('Oops, there is no country with that name')
         );
       }
     })
-    .then(markup => {
-      appendCountriesMarkup(markup);
-    })
     .catch(error => console.log(error));
 };
 
 function renderMarkupForOneCountry(countries) {
-  return countries
-    .map(
-      country =>
-        `<li class="list-item">
-          <img src="${country.flags.svg}" alt="" width="50px" />
-          <p><span class="list-headers">${country.name.official}</span></p>
-          <p><span class="list-headers">Capital:</span> ${country.capital}</p>
-          <p><span class="list-headers">Population:</span> ${country.population}</p>
-          <p><span class="list-headers">Languges:</span> ${country.languages}</p>
-        </li>`
-    )
+  const newMarkup = countries
+    .map(country => {
+      const { name, capital, population, flags, languages } = country;
+
+      const arrayLanguages = [];
+
+      for (key in languages) {
+        arrayLanguages.push(languages[key]);
+      }
+
+      return `<div class="box">
+            <img class="flag" src="${flags.svg}" alt="" width="50px" />
+            <h1><span class="list-headers country-name">${
+              name.official
+            }</span></h1>
+          </div>
+          <ul>
+            <li class="list-item">
+              <p><span class="list-headers">Capital:</span> ${capital}</p>
+              <p>
+                <span class="list-headers">Population:</span> ${population}
+              </p>
+              <p><span class="list-headers">Languges:</span> ${arrayLanguages.join(
+                ', '
+              )}</p>
+            </li>
+          </ul>`;
+    })
     .join('');
+
+  refs.countryList.innerHTML = '';
+  refs.countryInfo.innerHTML = newMarkup;
 }
 
 function renderMarkupFromTwoTillTenCountries(countries) {
-  return countries
+  const newMarkup = countries
     .map(
       country =>
         `<li class="list-items">
@@ -72,8 +89,7 @@ function renderMarkupFromTwoTillTenCountries(countries) {
         </li>`
     )
     .join('');
-}
 
-function appendCountriesMarkup(countries) {
-  refs.countryList.innerHTML = countries;
+  refs.countryInfo.innerHTML = '';
+  refs.countryList.innerHTML = newMarkup;
 }
