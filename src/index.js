@@ -4,7 +4,7 @@ import './css/styles.css';
 const _ = require('lodash');
 
 // Импорт ф-и
-import { fetchCountries } from './src/fetchCountries';
+import { fetchCountries } from './fetchCountries';
 
 // Решение задачи
 
