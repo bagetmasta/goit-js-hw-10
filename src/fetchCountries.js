@@ -51,7 +51,7 @@ function renderMarkupForOneCountry(countries) {
 
       const arrayLanguages = [];
 
-      for (key in languages) {
+      for (const key in languages) {
         arrayLanguages.push(languages[key]);
       }
 
